@@ -20,7 +20,7 @@ const TodoItem = ({name, label, setVal}) => {
   );
 }
 
-const TodoItemCreator = () => {
+const TodoItemCreator = ({onAddTask}) => {
 
   const [taskName, setTaskName] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
@@ -33,20 +33,52 @@ const TodoItemCreator = () => {
     setTaskDesc(text);
   }
 
+  function onAdd(e) {
+    e.preventDefault ();
+    console.log(e);
+    onAddTask(taskName, taskDesc);
+  }
+
   return (    
-      <form className="createTodoItem">
+      <form className="createTodoItem" onSubmit={onAdd}>
         <TodoItem name={"taskName"} label={"Task"} setVal={updateTaskName}/>
         <TodoItem name={"taskDesc"} label={"Description"} setVal={updateTaskDesc}/>       
-        <h1>{taskName}-{taskDesc}</h1>
+        <button type="submit">Add Task</button>
       </form>
     );
 }
 
+const TodoList = ({list}) => {
+  return (
+    <table>
+      <tr>
+        <th>Todo</th>
+        <th>Description</th>
+      </tr>
+      {
+        list.map((taskItem) => 
+          <tr key={taskItem.name}>
+             <td>{taskItem.name}</td> 
+             <td>{taskItem.desc}</td>
+          </tr>
+        )
+      }
+    </table>
+  );
+}
 
-function App() {
+function App() {  
+
+  const [listOfTasks, setListOfTasks] = useState([]);
+
+  function AddNewTask(name, desc) {    
+    setListOfTasks(oldList => [...oldList, {name: name, desc: desc}]);
+  }
+  
   return (
     <>
-      <TodoItemCreator />
+      <TodoItemCreator onAddTask={AddNewTask}/>
+      <TodoList list={listOfTasks} />
     </>
   );
 }
